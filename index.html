@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3A Lab 心理カウンセリング予約システム</title>
+    <style>
+        body {
+            font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #4285f4;
+        }
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            font-weight: 600;
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4285f4;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        .loading {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+        .security-notice {
+            background: #e8f5e8;
+            border: 2px solid #c3e6c3;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #2d5a2d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 S3A Lab 心理カウンセリング</h1>
+            <p>Google Workspace統合予約システム</p>
+        </div>
+
+        <div class="form-section">
+            <h3>📝 予約フォーム</h3>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="lastName">お名前（姓）*</label>
+                    <input type="text" id="lastName" required value="テスト">
+                </div>
+                <div class="form-group">
+                    <label for="firstName">お名前（名）*</label>
+                    <input type="text" id="firstName" required value="太郎">
+                </div>
+                <div class="form-group">
+                    <label for="email">メールアドレス*</label>
+                    <input type="email" id="email" required value="test@s3alab.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">電話番号*</label>
+                    <input type="tel" id="phone" required value="090-1234-5678">
+                </div>
+                <div class="form-group">
+                    <label for="age">年齢</label>
+                    <select id="age">
+                        <option value="30代" selected>30代</option>
+                        <option value="20代">20代</option>
+                        <option value="40代">40代</option>
+                        <option value="50代">50代</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sessionType">セッション形式*</label>
+                    <select id="sessionType" required>
+                        <option value="online" selected>オンライン（Google Meet）</option>
+                        <option value="offline">対面</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="preferredDate">希望日時*</label>
+                    <input type="datetime-local" id="preferredDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="concerns">主な相談内容</label>
+                    <textarea id="concerns" placeholder="差し支えない範囲でお聞かせください">GitHub Pages経由でのシステムテストです</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="specialRequests">その他ご要望</label>
+                    <textarea id="specialRequests" placeholder="特別な配慮が必要な場合など"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">予約を確定する</button>
+            </form>
+
+            <div id="result" class="result"></div>
+        </div>
+
+        <div class="security-notice">
+            🔒 GitHub Pages + Google Workspace により最高レベルのセキュリティで保護されています。
+            すべてのデータはGoogleの暗号化技術により安全に管理されます。
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxXNcxH0IK0-_nLtEvbJyAiSd0rPa7P2a74FeY870M3Hu63nwpWQ_Op3YAG1hVtxNW2/exec';
+        
+        // 明日の14:00を設定
+        window.addEventListener('load', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(14, 0, 0, 0);
+            document.getElementById('preferredDate').value = tomorrow.toISOString().slice(0, 16);
+        });
+
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const result = document.getElementById('result');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            result.style.display = 'block';
+            result.innerHTML = '📤 予約送信中...しばらくお待ちください';
+            result.className = 'result loading';
+            submitBtn.disabled = true;
+            
+            const bookingData = {
+                clientId: 'client_' + Date.now(),
+                lastName: document.getElementById('lastName').value,
+                firstName: document.getElementById('firstName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                age: document.getElementById('age').value,
+                sessionType: document.getElementById('sessionType').value,
+                date: new Date(document.getElementById('preferredDate').value).toISOString(),
+                time: new Date(document.getElementById('preferredDate').value).toTimeString().slice(0, 5),
+                isFirstTime: 'yes',
+                urgency: 'normal',
+                concerns: document.getElementById('concerns').value,
+                specialRequests: document.getElementById('specialRequests').value,
+                bookingType: 'new'
+            };
+            
+            console.log('送信データ:', bookingData);
+            
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'createBooking',
+                        booking: bookingData
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('予約結果:', data);
+                
+                if (data.success) {
+                    result.innerHTML = `
+                        <strong>🎉 予約が確定しました！</strong><br><br>
+                        📅 <strong>Google Calendar</strong>に自動登録されました<br>
+                        📧 確認メールを <strong>${bookingData.email}</strong> にお送りしました<br>
+                        🎥 <strong>Google Meet URL:</strong> ${data.meetUrl || 'メールに記載されています'}<br><br>
+                        <strong>予約詳細:</strong><br>
+                        お名前: ${bookingData.lastName} ${bookingData.firstName}様<br>
+                        日時: ${new Date(bookingData.date).toLocaleDateString('ja-JP')} ${bookingData.time}<br>
+                        セッション形式: ${bookingData.sessionType === 'online' ? 'オンライン' : '対面'}<br>
+                        予約ID: ${bookingData.clientId}<br><br>
+                        <small>3秒後にページをリロードします...</small>
+                    `;
+                    result.className = 'result success';
+                    
+                    // 3秒後にページリロード
+                    setTimeout(() => {
+                        location.reload();
+                    }, 3000);
+                    
+                } else {
+                    throw new Error(data.error || '予約の作成に失敗しました');
+                }
+                
+            } catch (error) {
+                console.error('予約エラー:', error);
+                result.innerHTML = `
+                    <strong>❌ エラーが発生しました</strong><br><br>
+                    ${error.message}<br><br>
+                    <small>お手数ですが、再度お試しいただくか、お電話でご連絡ください。<br>
+                    詳細なエラー情報はブラウザのコンソール（F12）をご確認ください。</small>
+                `;
+                result.className = 'result error';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
